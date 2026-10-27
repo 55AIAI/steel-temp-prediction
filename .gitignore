@@ -1,14 +1,18 @@
-# IDE files
 .idea/
 .vscode/
-
-# Jupyter
 .ipynb_checkpoints/
-
-# Python
 __pycache__/
 *.py[cod]
-
-# Data (если не хочешь заливать тяжелые CSV)
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+.test-tmp/
+.ruff_cache/
+data/
+output/
+*.joblib
+*.pkl
 *.csv
-*.xlsx
+!demo/*.csv

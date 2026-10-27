@@ -1,0 +1,32 @@
+name: Steel model checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        python: ['3.11', '3.12', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install -r requirements.txt
+      - run: python -m unittest discover -s tests -v
+      - run: python main.py train --demo --output-dir output/ci
+      - run: python main.py predict --model output/ci/model.joblib --csv demo/predict.csv --output output/ci/new_predictions.csv
+      - uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-evaluation-${{ matrix.python }}
+          path: output/ci/
+          retention-days: 7
+  docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build --tag steel-temperature-ci .
+      - run: docker run --rm steel-temperature-ci train --demo

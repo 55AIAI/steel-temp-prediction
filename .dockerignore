@@ -1,0 +1,11 @@
+.git
+.env*
+.venv
+venv
+.idea
+__pycache__
+data
+output
+tests
+.test-tmp
+.ruff_cache
